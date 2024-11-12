@@ -14,6 +14,7 @@ def paginate_results(
     n_results = 0
 
     while next_batch and (n_results < total_results):
+        print(n_results)
 
         params = {
             **params,
@@ -31,7 +32,7 @@ def paginate_results(
 
         data = r.json()
 
-        results.append(data["results"])
+        results.extend(data["results"])
 
         if data.get("next_batch") is None:
             next_batch = False
@@ -47,6 +48,8 @@ if __name__ == "__main__":
     import logging
     from dotenv import load_dotenv
     import os
+    logging.basicConfig(level=logging.INFO)
+    logging.info("Starting ...")
 
     load_dotenv()
 
@@ -56,11 +59,12 @@ if __name__ == "__main__":
     n_decisions = 100
     folder = "./data"
 
+
     for jurisdiction in ["cc", "ca", "tj"]:
         filename= os.path.join(folder, f"{jurisdiction}-decisions.json")
 
         logging.info(
-            msg="Downloading {n_decisions} from {jurisdiction} into {filename}"
+            msg=f"Downloading {n_decisions} from {jurisdiction} into {filename}"
         )
 
         decisions = paginate_results(
