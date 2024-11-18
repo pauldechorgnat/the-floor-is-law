@@ -38,20 +38,14 @@ path_to_zipfile = client.download(
     dir_name=ANNOTATED_DATA_FOLDER,
 )
 
-
-with open(
-    os.path.join(ANNOTATED_DATA_FOLDER, "annotated_data.json"),
-    "r",
-    encoding="utf-8",
-) as file:
-    annotated_data = json.load(file)
-
-
 with zipfile.ZipFile(path_to_zipfile, "r") as z:
     z.extractall(ANNOTATED_DATA_FOLDER)
 
 with open(os.path.join(ANNOTATED_DATA_FOLDER, "admin.jsonl")) as file:
     new_annotated_data = [json.loads(line) for line in file if len(line) > 1]
+
+
+annotated_data = []
 
 for d in new_annotated_data:
     text = d["text"]
