@@ -57,7 +57,7 @@ if __name__ == "__main__":
     judilibre_api_url = os.environ.get("JUDILIBRE_API_URL")
 
     n_decisions = 100
-    folder = "./data"
+    folder = os.path.join(os.path.dirname(__file__), "..", "..", "data")
 
 
     for jurisdiction in ["cc", "ca", "tj"]:
@@ -72,6 +72,7 @@ if __name__ == "__main__":
             url=judilibre_api_url,
             total_results=n_decisions,
             jurisdiction=[jurisdiction],
+            date_start="2024-01-01",
         )
 
 
