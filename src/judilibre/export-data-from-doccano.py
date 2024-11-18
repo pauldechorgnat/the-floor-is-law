@@ -10,6 +10,8 @@ load_dotenv()
 DATA_FOLDER = os.path.join(os.path.dirname(__file__), "..", "..", "data")
 ANNOTATED_DATA_FOLDER = os.path.join(DATA_FOLDER, "annotated")
 
+EXTRACT_TIME = str(datetime.datetime.now())
+
 USERNAME = os.environ.get("ADMIN_USERNAME")
 PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
@@ -51,17 +53,28 @@ with zipfile.ZipFile(path_to_zipfile, "r") as z:
 with open(os.path.join(ANNOTATED_DATA_FOLDER, "admin.jsonl")) as file:
     new_annotated_data = [json.loads(line) for line in file if len(line) > 1]
 
-new_annotated_data = [
-    {
-        "id": d["id"],
-        "checksum": d["checksum"],
-        "label": d.get("label", []),
-        "timestamp": str(datetime.datetime.now()),
-    }
-    for d in new_annotated_data
-]
-
-annotated_data += new_annotated_data
+for d in new_annotated_data:
+    text = d["text"]
+    id_ = d["id"]
+    checksum = d["checksum"]
+    annotations = [
+        {
+            "start": a[0],
+            "end": a[1],
+            "label": a[2],
+            "text": text[a[0]:a[1]],
+        }
+        for a in d.get("label", [])
+    ]
+    
+    annotated_data.append(
+        {
+            "id": id_,
+            "checksum": checksum,
+            "annotations": annotations,
+            "timestamp": EXTRACT_TIME,
+        }
+    )
 
 with open(
     os.path.join(ANNOTATED_DATA_FOLDER, "annotated_data.json"), "w", encoding="utf-8"
