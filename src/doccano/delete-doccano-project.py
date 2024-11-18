@@ -4,9 +4,6 @@ import os
 
 load_dotenv()
 
-
-
-DOCANNO_URL = "http://localhost:8000/api/v1/"
 USERNAME = os.environ.get("ADMIN_USERNAME")
 PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
